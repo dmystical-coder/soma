@@ -1,0 +1,3 @@
+out/
+cache/
+# keep broadcast/ — it records on-chain deployment transactions (useful for judges)
