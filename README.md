@@ -28,7 +28,7 @@ Built for the 14M+ MiniPay users across Africa and Southeast Asia who move real 
 | | |
 |---|---|
 | **App** | https://soma.vercel.app |
-| **SomaPay contract** | [`0x...`](https://celoscan.io/address/0x...) — Celo Mainnet |
+| **SomaPay contract** | [`0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A`](https://celoscan.io/address/0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A) — Celo Mainnet |
 | **ERC-8004 Agent** | [8004scan.io/agents/celo/...](http://8004scan.io/agents/celo/) |
 | **Self Agent ID** | [selfagentid.xyz](https://selfagentid.xyz) |
 | **Chain** | Celo Mainnet (chainId 42220) |
@@ -82,8 +82,8 @@ event QueryPaid(
 );
 ```
 
-→ [View on Celoscan](https://celoscan.io/address/0x...)
-→ [View QueryPaid events](https://celoscan.io/address/0x...#events)
+→ [View on Celoscan](https://celoscan.io/address/0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A)
+→ [View QueryPaid events](https://celoscan.io/address/0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A#events)
 
 ---
 
