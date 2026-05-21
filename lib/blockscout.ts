@@ -93,3 +93,53 @@ function emptyWalletSummary(address: string): WalletSummary {
     periodDays: 90, hasHistory: false,
   };
 }
+
+export interface HealthResult {
+  score: number;
+  label: string;
+  color: string;
+}
+
+/**
+ * Derives a 0–100 wallet health score from a WalletSummary.
+ *
+ * Components:
+ *   Activity     (0–30) — transaction frequency signals active usage
+ *   Income       (0–30) — receiving as well as sending = two-sided wallet
+ *   Net flow     (0–25) — balance trending up is healthier than draining
+ *   Consistency  (0–15) — two-directional usage vs. send-only
+ */
+export function computeHealthScore(s: WalletSummary): HealthResult {
+  if (!s.hasHistory || s.txCount === 0) {
+    return { score: 0, label: "No history", color: "#4B5060" };
+  }
+
+  let score = 0;
+
+  // Activity (0–30)
+  if (s.txCount >= 15)     score += 30;
+  else if (s.txCount >= 5) score += 20;
+  else                     score += 10;
+
+  // Income health (0–30)
+  const hasReceives = s.totalReceived > 0;
+  const hasSends    = s.totalSent > 0;
+  if (hasReceives && s.totalReceived >= s.totalSent * 0.5) score += 30;
+  else if (hasReceives)                                    score += 15;
+
+  // Net flow (0–25)
+  if (s.netFlow > 0)                              score += 25;
+  else if (s.netFlow >= -(s.totalSent * 0.2))     score += 15;
+  else                                             score += 5;
+
+  // Consistency (0–15)
+  if (hasSends && hasReceives) score += 15;
+  else                         score += 5;
+
+  score = Math.min(100, Math.max(0, score));
+
+  if (score >= 76) return { score, label: "Strong",          color: "#10B981" };
+  if (score >= 56) return { score, label: "Healthy",         color: "#10B981" };
+  if (score >= 31) return { score, label: "Building",        color: "#F59E0B" };
+                   return { score, label: "Getting Started", color: "#EF4444" };
+}

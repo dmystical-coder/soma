@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { connectWallet, getUSDCBalance } from "@/lib/wallet";
 import { payForReading, QueryType } from "@/lib/somaPay";
+import { computeHealthScore } from "@/lib/blockscout";
 import type { WalletSummary } from "@/lib/blockscout";
 
 const SUGGESTIONS = [
@@ -81,10 +82,16 @@ export default function Home() {
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center px-4 gap-6">
-        <div className="relative flex items-center justify-center w-20 h-20">
-          <div className="absolute inset-0 rounded-full bg-[#F59E0B]/10 animate-pulse" />
-          <span className="text-4xl select-none">◈</span>
-        </div>
+
+        {/* Hero: gauge when data is available, oracle mark otherwise */}
+        {hasHistory && summary ? (
+          <HealthGauge {...computeHealthScore(summary)} />
+        ) : (
+          <div className="relative flex items-center justify-center w-20 h-20">
+            <div className="absolute inset-0 rounded-full bg-[#F59E0B]/10 animate-pulse" />
+            <span className="text-4xl select-none">◈</span>
+          </div>
+        )}
 
         <div className="text-center space-y-1">
           <h1 className="text-2xl font-bold">
@@ -142,6 +149,81 @@ export default function Home() {
         <a href="/privacy">Privacy</a>
       </footer>
     </main>
+  );
+}
+
+// ── HealthGauge ────────────────────────────────────────────────────
+// 270° SVG arc gauge. r=52, circumference≈326.7, arc portion≈245.
+const CIRCUMFERENCE = 2 * Math.PI * 52;   // ≈ 326.73
+const ARC_LENGTH    = CIRCUMFERENCE * 0.75; // 270° = 75% of circle ≈ 245.05
+// Rotation so the gap sits at the bottom-centre (start at ~7 o'clock).
+const START_ANGLE   = 135;
+
+function HealthGauge({ score, label, color }: { score: number; label: string; color: string }) {
+  const filled   = (score / 100) * ARC_LENGTH;
+  const dashArr  = `${filled} ${CIRCUMFERENCE - filled}`;
+  const trackArr = `${ARC_LENGTH} ${CIRCUMFERENCE - ARC_LENGTH}`;
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <svg
+        width="140" height="140"
+        viewBox="0 0 120 120"
+        aria-label={`Wallet health score: ${score} out of 100 — ${label}`}
+      >
+        {/* Track */}
+        <circle
+          cx="60" cy="60" r="52"
+          fill="none"
+          stroke="#1A1D27"
+          strokeWidth="9"
+          strokeLinecap="round"
+          strokeDasharray={trackArr}
+          transform={`rotate(${START_ANGLE} 60 60)`}
+        />
+        {/* Score arc */}
+        <circle
+          cx="60" cy="60" r="52"
+          fill="none"
+          stroke={color}
+          strokeWidth="9"
+          strokeLinecap="round"
+          strokeDasharray={dashArr}
+          transform={`rotate(${START_ANGLE} 60 60)`}
+          style={{ transition: "stroke-dasharray 0.6s ease" }}
+        />
+        {/* Score number */}
+        <text
+          x="60" y="54"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill="#F0F0F0"
+          fontSize="26"
+          fontWeight="700"
+          fontFamily="system-ui, sans-serif"
+        >
+          {score}
+        </text>
+        {/* "/100" sub-label */}
+        <text
+          x="60" y="72"
+          textAnchor="middle"
+          fill="#8C8FA3"
+          fontSize="10"
+          fontFamily="system-ui, sans-serif"
+        >
+          / 100
+        </text>
+      </svg>
+
+      {/* Label badge */}
+      <span
+        className="text-xs font-semibold px-3 py-1 rounded-full"
+        style={{ backgroundColor: `${color}22`, color }}
+      >
+        {label}
+      </span>
+    </div>
   );
 }
 
