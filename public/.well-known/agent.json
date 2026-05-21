@@ -1,0 +1,12 @@
+{
+  "name": "Soma",
+  "description": "On-chain financial oracle for MiniPay users.",
+  "url": "https://soma.vercel.app",
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": true,
+    "payment": "x402"
+  },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"]
+}

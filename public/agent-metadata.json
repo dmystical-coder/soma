@@ -1,0 +1,11 @@
+{
+  "type": "Agent",
+  "name": "Soma",
+  "description": "On-chain financial oracle. Reads MiniPay wallet history and delivers personalized financial insights for users in Africa and Southeast Asia.",
+  "image": "https://soma.vercel.app/agent-logo.png",
+  "endpoints": [
+    { "type": "a2a",    "url": "https://soma.vercel.app/.well-known/agent.json" },
+    { "type": "wallet", "address": "REPLACE_WITH_TREASURY_ADDRESS", "chainId": 42220 }
+  ],
+  "supportedTrust": ["reputation"]
+}
