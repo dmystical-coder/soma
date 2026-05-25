@@ -5,7 +5,7 @@
   "image": "https://soma.vercel.app/agent-logo.png",
   "endpoints": [
     { "type": "a2a",    "url": "https://soma.vercel.app/.well-known/agent.json" },
-    { "type": "wallet", "address": "REPLACE_WITH_TREASURY_ADDRESS", "chainId": 42220 }
+    { "type": "wallet", "address": "0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A", "chainId": 42220 }
   ],
   "supportedTrust": ["reputation"]
 }

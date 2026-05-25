@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { fetchWalletSummary } from "@/lib/blockscout";
-import { buildOraclePrompt } from "@/lib/prompt";
+import { ORACLE_SYSTEM_PROMPT, buildOracleUserMessage } from "@/lib/prompt";
 import { verifyPaymentTx, QueryType } from "@/lib/somaPay";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -32,14 +32,19 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const prompt = buildOraclePrompt(summary);
-
-    // Stream the oracle reading
+    // Stream the oracle reading — system prompt is cached across requests
     const stream = await anthropic.messages.stream({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 600,
-      messages: [{ role: "user", content: prompt }],
-    });
+      system: [
+        {
+          type: "text",
+          text: ORACLE_SYSTEM_PROMPT,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
+      messages: [{ role: "user", content: buildOracleUserMessage(summary) }],
+    } as any);
 
     // Return as a streaming text response
     const readable = new ReadableStream({

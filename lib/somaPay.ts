@@ -1,4 +1,4 @@
-import { encodeFunctionData, parseAbi, createPublicClient, createWalletClient, http } from "viem";
+import { encodeFunctionData, parseAbi, createPublicClient, createWalletClient, http, decodeEventLog } from "viem";
 import { celo } from "viem/chains";
 import { USDC_ADDRESS, USDC_FEE_ADAPTER } from "./wallet";
 
@@ -80,14 +80,28 @@ export async function verifyPaymentTx(
       hash: txHash as `0x${string}`,
     });
     if (receipt.status !== "success") return false;
-    if (receipt.to?.toLowerCase() !== getSomaPayAddress().toLowerCase()) return false;
 
-    // Find QueryPaid event log
-    const topic = "QueryPaid(address,uint8,uint256,uint256)";
-    const hasEvent = receipt.logs.some(
-      (log) => log.address.toLowerCase() === getSomaPayAddress().toLowerCase()
-    );
-    return hasEvent;
+    const somaPayAddress = getSomaPayAddress().toLowerCase();
+
+    for (const log of receipt.logs) {
+      if (log.address.toLowerCase() !== somaPayAddress) continue;
+      try {
+        const { eventName, args } = decodeEventLog({
+          abi: SOMA_PAY_ABI,
+          data: log.data,
+          topics: log.topics,
+        });
+        if (eventName !== "QueryPaid") continue;
+        const user  = (args as any).user      as string;
+        const qType = (args as any).queryType as number;
+        if (user.toLowerCase() !== expectedPayer.toLowerCase()) continue;
+        if (Number(qType) !== queryType) continue;
+        return true;
+      } catch {
+        // log doesn't match the ABI — skip
+      }
+    }
+    return false;
   } catch {
     return false;
   }

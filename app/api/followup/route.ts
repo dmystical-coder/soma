@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { fetchWalletSummary } from "@/lib/blockscout";
-import { buildFollowUpPrompt } from "@/lib/prompt";
+import { FOLLOWUP_SYSTEM_PROMPT, buildFollowUpUserMessage } from "@/lib/prompt";
 import { verifyPaymentTx, QueryType } from "@/lib/somaPay";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -23,13 +23,24 @@ export async function POST(req: NextRequest) {
     }
 
     const summary = await fetchWalletSummary(address);
-    const prompt  = buildFollowUpPrompt(summary, originalReading ?? "", question);
 
     const message = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 300,
-      messages: [{ role: "user", content: prompt }],
-    });
+      system: [
+        {
+          type: "text",
+          text: FOLLOWUP_SYSTEM_PROMPT,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
+      messages: [
+        {
+          role: "user",
+          content: buildFollowUpUserMessage(summary, originalReading ?? "", question),
+        },
+      ],
+    } as any);
 
     const text =
       message.content[0].type === "text" ? message.content[0].text : "";
