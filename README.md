@@ -29,7 +29,7 @@ Built for the 14M+ MiniPay users across Africa and Southeast Asia who move real 
 |---|---|
 | **App** | https://soma-protocol.vercel.app |
 | **SomaPay contract** | [`0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A`](https://celoscan.io/address/0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A) — Celo Mainnet |
-| **ERC-8004 Agent** | [8004scan.io/agents/celo/...](http://8004scan.io/agents/celo/) |
+| **ERC-8004 Agent** | [`agentId 9176`](http://8004scan.io/agents/celo/9176) |
 | **Self Agent ID** | [selfagentid.xyz](https://selfagentid.xyz) |
 | **Chain** | Celo Mainnet (chainId 42220) |
 
@@ -41,7 +41,7 @@ Soma qualifies for the **+$250 AI Track bonus** by satisfying all three requirem
 
 | Requirement | Implementation |
 |---|---|
-| ERC-8004 registered agent | Agent NFT minted on Identity Registry `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
+| ERC-8004 registered agent | Agent NFT minted — [agentId 9176](http://8004scan.io/agents/celo/9176) on Identity Registry `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
 | Self Agent ID via selfxyz | Soulbound NFT on `SelfAgentRegistry` `0xaC3DF9ABf80d0F5c020C06B04Cced27763355944` |
 | On-chain wallet transactions | Every reading = 1 `SomaPay.payForReading()` call settling USDC on Celo mainnet |
 
