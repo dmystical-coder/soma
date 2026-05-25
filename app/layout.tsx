@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Soma — Your On-Chain Financial Oracle",
   description: "Read your wallet. Know your money. Personalized AI financial insights powered by your Celo wallet history.",
+  other: {
+    "talentapp:project_verification": "05d5914e65a1d6b5aa2839481982baf02a3c9543db32bf1fdbf6f9d6628b9f06822ebf34cfdf4b92435ba3693dd3911d4df56ffc0f8cb94446eab3e8886db283",
+  },
 };
 
 export const viewport: Viewport = {

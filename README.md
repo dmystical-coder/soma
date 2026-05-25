@@ -27,7 +27,7 @@ Built for the 14M+ MiniPay users across Africa and Southeast Asia who move real 
 
 | | |
 |---|---|
-| **App** | https://soma.vercel.app |
+| **App** | https://soma-protocol.vercel.app |
 | **SomaPay contract** | [`0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A`](https://celoscan.io/address/0xebFb9E2dD4d932fdA3A39247959c29FAc6F44d8A) — Celo Mainnet |
 | **ERC-8004 Agent** | [8004scan.io/agents/celo/...](http://8004scan.io/agents/celo/) |
 | **Self Agent ID** | [selfagentid.xyz](https://selfagentid.xyz) |
