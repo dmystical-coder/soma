@@ -37,11 +37,37 @@ export async function connectWallet() {
   const ethereum = (window as any).ethereum;
   if (!ethereum) throw new Error("No wallet found — open in MiniPay");
 
+  // MiniPay auto-injects the address; other wallets need an explicit request
+  if (!isMiniPay()) {
+    await ethereum.request({ method: "eth_requestAccounts" });
+    // Switch to Celo mainnet (chainId 42220 = 0xa4ec)
+    try {
+      await ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0xa4ec" }],
+      });
+    } catch (switchErr: any) {
+      if (switchErr.code === 4902) {
+        await ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: "0xa4ec",
+            chainName: "Celo Mainnet",
+            nativeCurrency: { name: "Celo", symbol: "CELO", decimals: 18 },
+            rpcUrls: ["https://forno.celo.org"],
+            blockExplorerUrls: ["https://celoscan.io"],
+          }],
+        });
+      }
+    }
+  }
+
   const walletClient = createWalletClient({
     chain: celo,
     transport: custom(ethereum),
   });
   const [address] = await walletClient.getAddresses();
+  if (!address) throw new Error("No account connected");
   return { walletClient, address };
 }
 
